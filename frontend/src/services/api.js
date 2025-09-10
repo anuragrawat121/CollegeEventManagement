@@ -1,9 +1,20 @@
 import axios from "axios";
 
 const API_BASE = "http://localhost:5000/api";
-// Fetch all participants (for organizer dashboard)
-export const fetchAllParticipants = () => API.get("/participants");
-export const fetchEvents = () => axios.get(`${API_BASE}/events`);
-export const registerEvent = (data) => axios.post(`${API_BASE}/register`, data);
+
+const API = axios.create({ baseURL: API_BASE });
+
+// Auth
+export const signup = (data) => API.post("/auth/signup", data);
+export const login = (data) => API.post("/auth/login", data);
+
+// Events
+export const fetchEvents = () => API.get("/events");
+
+// Registration
+export const registerEvent = (data) => API.post("/register", data);
 export const fetchTickets = (email) =>
-  axios.get(`${API_BASE}/register?email=${email}`);
+  API.get("/register", { params: { email } });
+
+// Participants (for admin dashboard)
+export const fetchAllParticipants = () => API.get("/register/participants");

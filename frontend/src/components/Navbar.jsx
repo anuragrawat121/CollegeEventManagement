@@ -10,13 +10,13 @@ const Navbar = () => {
       {/* Navigation Links */}
       <div className="flex space-x-6 text-gray-700 font-medium">
         <Link
-          to="/"
+          to="/home"
           className="hover:text-blue-600 transition-colors duration-200"
         >
           Home
         </Link>
         <Link
-          to="/my-tickets"
+          to="/tickets"
           className="hover:text-blue-600 transition-colors duration-200"
         >
           My Tickets
@@ -27,12 +27,7 @@ const Navbar = () => {
         >
           Dashboard
         </Link>
-        <Link
-          to="/register"
-          className="hover:text-blue-600 transition-colors duration-200"
-        >
-          Registration
-        </Link>
+        
       </div>
     </nav>
   );

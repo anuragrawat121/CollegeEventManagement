@@ -1,25 +1,44 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
+import Auth from "./pages/Auth";
 import Register from "./pages/Register";
 import MyTickets from "./pages/MyTickets";
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 
-const App = () => {
+const AppContent = () => {
+  const location = useLocation();
+  const isAuth = location.pathname === "/";
   return (
-    <Router>
-      <Navbar />
+    <>
+      {!isAuth && <Navbar />}
       <div className="min-h-screen p-4">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register/:id" element={<Register />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/" element={<Auth />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/register/:eventId" element={<Register />} />
           <Route path="/tickets" element={<MyTickets />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
-      <Footer />
+      {!isAuth && <Footer />}
+    </>
+  );
+};
+
+const App = () => {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 };
