@@ -36,6 +36,9 @@ console.log("Loading event routes...");
 app.use("/api/events", require("./routes/eventRoutes"));
 console.log("Loading registration routes...");
 app.use("/api/register", require("./routes/registrationRoutes"));
+console.log("Loading admin routes...");
+app.use("/api", require("./routes/adminRoutes"));
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Backend running on port ${PORT} 🚀`));

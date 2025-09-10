@@ -6,7 +6,12 @@ const Auth = () => {
   const navigate = useNavigate();
   const [mode, setMode] = useState("login"); // "login" | "signup"
   const [role, setRole] = useState("participant"); // participant | organizer
-  const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -19,10 +24,12 @@ const Auth = () => {
     const next = {};
     if (mode === "signup" && !form.name.trim()) next.name = "Name is required";
     if (!form.email.trim()) next.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = "Enter a valid email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+      next.email = "Enter a valid email";
     if (!form.password.trim()) next.password = "Password is required";
     else if (form.password.length < 6) next.password = "Minimum 6 characters";
-    if (mode === "signup" && form.password !== form.confirmPassword) next.confirmPassword = "Passwords do not match";
+    if (mode === "signup" && form.password !== form.confirmPassword)
+      next.confirmPassword = "Passwords do not match";
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -39,13 +46,13 @@ const Auth = () => {
           name: form.name,
           email: form.email,
           password: form.password,
-          role: role
+          role: role,
         });
       } else {
         response = await login({
           email: form.email,
           password: form.password,
-          role: role
+          role: role,
         });
       }
 
@@ -61,10 +68,16 @@ const Auth = () => {
       }
     } catch (error) {
       console.error("Auth error:", error);
-      if (error.response?.data?.message) {
-        alert(error.response.data.message);
+
+      if (error.response) {
+        console.error("Error response:", error.response);
+        alert(error.response.data?.message || "Server error");
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+        alert("No response from server. Is backend running?");
       } else {
-        alert("Something went wrong. Please try again.");
+        console.error("Setup error:", error.message);
+        alert("Error: " + error.message);
       }
     } finally {
       setSubmitting(false);
@@ -79,14 +92,18 @@ const Auth = () => {
             {mode === "login" ? "Welcome back" : "Create an account"}
           </h1>
           <p className="text-white/90 text-sm mt-1">
-            {role === "participant" && "Register for events and access your tickets."}
-            {role === "organizer" && "Manage event registrations and view participants."}
+            {role === "participant" &&
+              "Register for events and access your tickets."}
+            {role === "organizer" &&
+              "Manage event registrations and view participants."}
           </p>
         </div>
 
         <div className="px-6 pt-5">
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">{mode === "signup" ? "Sign up as" : "Sign in as"}</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {mode === "signup" ? "Sign up as" : "Sign in as"}
+            </label>
             <select
               className="w-full border rounded px-2 py-2"
               value={role}
@@ -99,56 +116,68 @@ const Auth = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-3">
-          {mode === "signup" && (
+            {mode === "signup" && (
+              <input
+                name="name"
+                type="text"
+                placeholder="Full Name"
+                className="w-full p-2 border rounded"
+                value={form.name}
+                onChange={handleChange}
+              />
+            )}
+            {errors.name && (
+              <p className="text-sm text-red-600">{errors.name}</p>
+            )}
             <input
-              name="name"
-              type="text"
-              placeholder="Full Name"
+              name="email"
+              type="email"
+              placeholder="Email"
               className="w-full p-2 border rounded"
-              value={form.name}
+              value={form.email}
               onChange={handleChange}
             />
-          )}
-          {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            className="w-full p-2 border rounded"
-            value={form.email}
-            onChange={handleChange}
-          />
-          {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            className="w-full p-2 border rounded"
-            value={form.password}
-            onChange={handleChange}
-          />
-          {errors.password && <p className="text-sm text-red-600">{errors.password}</p>}
-          {mode === "signup" && (
+            {errors.email && (
+              <p className="text-sm text-red-600">{errors.email}</p>
+            )}
             <input
-              name="confirmPassword"
+              name="password"
               type="password"
-              placeholder="Confirm Password"
+              placeholder="Password"
               className="w-full p-2 border rounded"
-              value={form.confirmPassword}
+              value={form.password}
               onChange={handleChange}
             />
-          )}
-          {errors.confirmPassword && (
-            <p className="text-sm text-red-600">{errors.confirmPassword}</p>
-          )}
+            {errors.password && (
+              <p className="text-sm text-red-600">{errors.password}</p>
+            )}
+            {mode === "signup" && (
+              <input
+                name="confirmPassword"
+                type="password"
+                placeholder="Confirm Password"
+                className="w-full p-2 border rounded"
+                value={form.confirmPassword}
+                onChange={handleChange}
+              />
+            )}
+            {errors.confirmPassword && (
+              <p className="text-sm text-red-600">{errors.confirmPassword}</p>
+            )}
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className={`w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 ${submitting ? "opacity-60 cursor-not-allowed" : ""}`}
-          >
-            {submitting ? "Please wait..." : mode === "login" ? "Login" : "Sign up"}
-          </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className={`w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 ${
+                submitting ? "opacity-60 cursor-not-allowed" : ""
+              }`}
+            >
+              {submitting
+                ? "Please wait..."
+                : mode === "login"
+                ? "Login"
+                : "Sign up"}
+            </button>
           </form>
 
           <div className="mt-4 text-center text-sm text-gray-600 pb-6">
@@ -181,5 +210,3 @@ const Auth = () => {
 };
 
 export default Auth;
-
-

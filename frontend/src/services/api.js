@@ -13,7 +13,8 @@ export const fetchEvents = () => API.get("/events");
 
 // Registration
 export const registerEvent = (data) => API.post("/register", data);
-export const fetchTickets = (email) => API.get(`/register`, { params: { email } });
+export const fetchTickets = (email) =>
+  API.get("/register", { params: { email } });
 
-// Participants (organizer)
-export const fetchAllParticipants = () => API.get("/participants");
+// Participants (for admin dashboard)
+export const fetchAllParticipants = () => API.get("/register/participants");
