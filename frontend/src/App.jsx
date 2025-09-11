@@ -12,17 +12,27 @@ import Auth from "./pages/Auth";
 import Register from "./pages/Register";
 import MyTickets from "./pages/MyTickets";
 import Dashboard from "./pages/Dashboard";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminPanel from "./pages/AdminPanel";
 
 const AppContent = () => {
   const location = useLocation();
   const isAuth = location.pathname === "/";
+  const isAdmin = location.pathname === "/admin";
+  
+  // Admin panel has its own layout
+  if (isAdmin) {
+    return (
+      <Routes>
+        <Route path="/admin" element={<AdminPanel />} />
+      </Routes>
+    );
+  }
+  
   return (
     <>
       {!isAuth && <Navbar />}
       <div className="min-h-screen p-4">
         <Routes>
-          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/" element={<Auth />} />
           <Route path="/home" element={<Home />} />
           <Route path="/register/:eventId" element={<Register />} />
